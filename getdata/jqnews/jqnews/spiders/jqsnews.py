@@ -29,10 +29,14 @@ class JqsnewsSpider(scrapy.Spider):
         item['newtitle'] = response.xpath('//div[@class = "article"]/h1[@class = "arti_title"]/text()').extract_first()
         item['newdate'] = response.xpath('//p[@class = "arti_metas"]/span[@class = "arti_update"]/text()').extract_first().split(':')[-1]
         try:
-            item['newimpa'] = 'https://news.gench.edu.cn'+response.xpath('//div[@class = "read"]/div[@class = "wp_articlecontent"]/p/img/@src').extract_first()
+            item['newimpa'] = 'https://news.gench.edu.cn' + response.xpath('//img/@src').extract_first()
+            # item['newimpa'] = 'https://news.gench.edu.cn'+response.xpath('//div[@class = "read"]/div[@class = "wp_articlecontent"]/p/img/@src').extract_first()
         except TypeError:
-            item['newimpa'] = 'https://news.gench.edu.cn' + response.xpath('//div[@class = "imgnav imgnav1"]/div[@class = "img"]/img/@src').extract_first()
-        if item['newimpa'] == None:
-            item['newimpa'] = 'https://news.gench.edu.cn' + response.xpath('//div[@class = "read"]/div[@class = "wp_articlecontent"]/div/div/divimg/@src').extract_first()
+            print("error")
+            # item['newimpa'] = 'https://news.gench.edu.cn' + response.xpath('//div[@class = "imgnav imgnav1"]/div[@class = "img"]/img/@src').extract_first()
+        # if item['newimpa'] == None:
+        #     item['newimpa'] = 'https://news.gench.edu.cn' + response.xpath('//div[@class = "read"]/div[@class = "wp_articlecontent"]/div/div/divimg/@src').extract_first()
+        # if item['newimpa'] ==None:
+        #     item['newimpa'] = 'https://news.gench.edu.cn' + response.xpath('//div')
         yield item
 
