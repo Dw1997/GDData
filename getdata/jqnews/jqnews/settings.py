@@ -28,7 +28,7 @@ HOST = 'localhost'
 USER = 'root'
 PASSWORD = 'Dwzx170322'
 PORT = 3306
-DBNAME = 'news'
+DBNAME = 'graduate_design'
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -73,9 +73,9 @@ DBNAME = 'news'
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'jqnews.pipelines.JqnewsPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'jqnews.pipelines.JqnewsPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
