@@ -26,7 +26,8 @@ class Login_Reg():
 
         self.db.close()
 
-        if hashlib.md5(spass.encode('utf8')).hexdigest()==passw:
+        # if hashlib.md5(spass.encode('utf8')).hexdigest()==passw:
+        if spass == passw:
             return True
         else:
             return False

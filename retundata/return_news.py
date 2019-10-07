@@ -6,4 +6,5 @@ class Renews():
         self.cursor = self.db.cursor()
 
     def fkrenews(self,num):
+        
         pass
