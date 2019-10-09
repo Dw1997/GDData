@@ -46,7 +46,7 @@ class Login_Reg():
 
 
 # dw = Login_Reg()
-# re = dw.check('18930913829',hashlib.md5('Dwzx170322'.encode('utf8')).hexdigest())
+# re = dw.check('18930913829','Dwzx170322')
 # print(re)
 # re2 = dw.register('15579760328','dw','dwsdsghh@163.com','Dwzx5201314')
 # print(re2)

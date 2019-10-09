@@ -11,7 +11,10 @@ def login():
 	passw = request.args.get('passw')
 	x = Login_Reg()
 	result = x.check(user,passw)
-	return result
+	if result:
+		return 'success'
+	else:
+		return 'fail'
 
 if __name__=='__main__':
 	app.config['JSON_AS_ASCII'] = False
