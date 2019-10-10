@@ -1,5 +1,4 @@
 import pymysql
-import hashlib
 
 class Login_Reg():
 
