@@ -6,8 +6,7 @@ class getinform():
 		self.myclient = pymongo.MongoClient('mongodb://localhost:27017/')
 		self.mydb = self.myclient['12306']
 		self.mycol = self.mydb['cartable']
-		self.sqldb = pymysql.connect("localhost", "root", "Dwzx5201314",
-                         "12306timetable", charset="utf8")
+		self.sqldb = pymysql.connect("localhost", "root", "Dwzx170322","12306timetable", charset="utf8")
 		self.cursor = self.sqldb.cursor()
 
 	def gettrain(self, head):
@@ -32,3 +31,4 @@ class getinform():
 		table = {}
 		table['data'] = listtable
 		return table
+

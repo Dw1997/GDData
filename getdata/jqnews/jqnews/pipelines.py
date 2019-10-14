@@ -32,7 +32,7 @@ class JqnewsPipeline(object):
         self.db.close()
 
     def process_item(self, item, spider):
-        sql = "insert into school_news values ('%s','%s','%s','%s','%s')"%(item['newid'],item['newurl'],item['newdate'],item['newimpa'],item['newtitle'])
+        sql = "insert into school_news values (0,'%s','%s','%s','%s','%s')"%(item['newid'],item['newurl'],item['newdate'],item['newimpa'],item['newtitle'])
         self.cursor.execute(sql)
         self.db.commit()
         return item
