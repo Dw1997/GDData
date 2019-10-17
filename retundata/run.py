@@ -2,6 +2,7 @@ from flask import Flask,request,jsonify,render_template
 from login_reg import Login_Reg
 from getlinere import getinform
 from yuanzun import getxs
+from return_news import Renews
 
 app = Flask(__name__)
 @app.route('/')
@@ -33,6 +34,29 @@ def login():
 		return jsonify({'result':'success'})
 	else:
 		return jsonify({'result':'fail'})
+
+@app.route('/api/register',methods=['post','get'])
+def register():
+	userphone = request.args.get('userphone')
+	username = request.args.get('username')
+	usermail = request.args.get('usermail')
+	userpass = request.args.get('userpass')
+	x = Login_Reg()
+	result = x.register(userphone,username,usermail,userpass)
+	re = {}
+	if result==True:
+		re['data'] = 'success'
+	else:
+		re['data'] = 'fail'
+	return jsonify(re)
+
+@app.route('/api/news',methods=['post','get'])
+def renews():
+	num = request.args.get('num')
+	i = int(num)
+	x = Renews()
+	data = x.fkrenews(i)
+	return jsonify(data)
 
 if __name__=='__main__':
 	app.config['JSON_AS_ASCII'] = False
