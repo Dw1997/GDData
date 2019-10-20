@@ -3,3 +3,5 @@
 
 登录接口：
 http://127.0.0.1:5000/api/login?name=18930913829&passw=Dwzx170322 #name为用户手机号，passw为密码
+返回新闻接口：
+http://dwy.dwhhh.cn/api/news?num=1 #1为返回页数，表示第一页，每页20条新闻容
