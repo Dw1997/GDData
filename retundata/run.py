@@ -3,6 +3,7 @@ from login_reg import Login_Reg
 from getlinere import getinform
 from yuanzun import getxs
 from return_news import Renews
+from zhy_login_reg import ZHY_Login_Reg
 
 app = Flask(__name__)
 @app.route('/')
@@ -57,6 +58,33 @@ def renews():
 	x = Renews()
 	data = x.fkrenews(i)
 	return jsonify(data)
+
+
+@app.route('/zhy/api/login', methods=['post','get'])
+def zhylogin():
+	user = request.args.get('name')
+	passw = request.args.get('passw')
+	x = ZHY_Login_Reg()
+	result = x.check(user, passw)
+	if result:
+		return jsonify({'result': result})
+	else:
+		return jsonify({'result': 'fail'})
+
+@app.route('/zhy/api/reg',methods=['post','get'])
+def zhyreg():
+	userphone = request.args.get('phone')
+	username = request.args.get('name')
+	userpass = request.args.get('pass')
+	useraddr = request.args.get('addr')
+	x = ZHY_Login_Reg()
+	result = x.register(userphone,username,userpass,useraddr)
+	if result:
+		return jsonify({'result': result})
+	else:
+		return jsonify({'result': result})
+
+
 
 if __name__=='__main__':
 	app.config['JSON_AS_ASCII'] = False
