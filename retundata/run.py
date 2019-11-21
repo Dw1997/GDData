@@ -59,17 +59,16 @@ def renews():
 	data = x.fkrenews(i)
 	return jsonify(data)
 
-
-@app.route('/zhy/api/login', methods=['post','get'])
+@app.route('/zhy/api/login',methods = ['post','get'])
 def zhylogin():
 	user = request.args.get('name')
 	passw = request.args.get('passw')
 	x = ZHY_Login_Reg()
-	result = x.check(user, passw)
+	result = x.check(user,passw)
 	if result:
-		return jsonify({'result': result})
+		return jsonify({'result':result})
 	else:
-		return jsonify({'result': 'fail'})
+		return jsonify({'result':'fail'})
 
 @app.route('/zhy/api/reg',methods=['post','get'])
 def zhyreg():
@@ -77,12 +76,45 @@ def zhyreg():
 	username = request.args.get('name')
 	userpass = request.args.get('pass')
 	useraddr = request.args.get('addr')
+	areaid = request.args.get('area')
 	x = ZHY_Login_Reg()
-	result = x.register(userphone,username,userpass,useraddr)
+	result = x.register(userphone,username,userpass,useraddr,areaid)
 	if result:
 		return jsonify({'result': result})
 	else:
 		return jsonify({'result': result})
+
+@app.route('/zhy/api/addposter',methods=['post','get'])
+def zhyaddposter():
+	userphone = request.args.get('phone')
+	username = request.args.get('name')
+	userpass = request.args.get('pass')
+	areaid = request.args.get('area')
+	x = ZHY_Login_Reg()
+	result = x.addposter(userphone,username,userpass,areaid)
+	if result:
+		return jsonify({'result': result})
+	else:
+		return jsonify({'result': result})
+
+
+@app.route('/zhy/api/changepass',methods=['post','get'])
+def zhychagnge():
+	userphone = request.args.get('phone')
+	userpass = request.args.get('oldp')
+	newpass = request.args.get('newp')
+	x = ZHY_Login_Reg()
+	result = x.changepass(userphone,userpass,newpass)
+	return jsonify({'result':result})
+
+
+@app.route('/zhy/api/orders',methods=['post','get'])
+def zhyorders():
+	whoo = request.args.get('who')
+	userphone = request.args.get('phone')
+	x = ZHY_Login_Reg()
+	result = x.orders(whoo,userphone)
+	return jsonify({'result':result})
 
 
 
