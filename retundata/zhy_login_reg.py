@@ -77,15 +77,15 @@ class ZHY_Login_Reg():
 
         return res
 
-    def orders(self,who,userphone):
-        sql = "select * from orderlist where %s=%s"%(who,userphone)
+    def orders(self,who,userphone,gp):
+        sql = "select * from orderlist where %s=%s and getpost=%s"%(who,userphone,gp)
         print(sql)
         listo = []
         try:
             self.cursor.execute(sql)
             result = self.cursor.fetchall()
             for i in result:
-                dicts = dict(zip(['orderid','getuser','poster','state','getpost'],list(i)))
+                dicts = dict(zip(['orderid','getuser','poster','state','getpost','timee'],list(i)))
                 listo.append(dicts)
             # print(listo)
             res = listo
@@ -98,7 +98,7 @@ class ZHY_Login_Reg():
 
 
 dw = ZHY_Login_Reg()
-re = dw.orders('getuser','10000')
+re = dw.orders('getuser','10000',0)
 print(re)
 # re2 = dw.register('zhy_3','dw','12345a','6单元405')
 # dw = Login_Reg()

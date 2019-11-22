@@ -32,7 +32,7 @@ def login():
 	x = Login_Reg()
 	result = x.check(user,passw)
 	if result:
-		return jsonify({'result':'success'})
+		return jsonify({'result':result})
 	else:
 		return jsonify({'result':'fail'})
 
@@ -50,6 +50,15 @@ def register():
 	else:
 		re['data'] = 'fail'
 	return jsonify(re)
+
+@app.route('/api/changep',methods=['post','get'])
+def changep():
+	phone = request.args.get('phone')
+	oldp = request.args.get('oldp')
+	newp = request.args.get('newp')
+	x = Login_Reg()
+	result = x.changep(phone,oldp,newp)
+	return jsonify({'result':result})
 
 @app.route('/api/news',methods=['post','get'])
 def renews():
@@ -112,8 +121,9 @@ def zhychagnge():
 def zhyorders():
 	whoo = request.args.get('who')
 	userphone = request.args.get('phone')
+	gp = request.args.get('gp')
 	x = ZHY_Login_Reg()
-	result = x.orders(whoo,userphone)
+	result = x.orders(whoo,userphone,gp)
 	return jsonify({'result':result})
 
 
