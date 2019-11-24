@@ -95,8 +95,6 @@ class ZHY_Login_Reg():
         return res
 
 
-
-
 dw = ZHY_Login_Reg()
 re = dw.orders('getuser','10000',0)
 print(re)

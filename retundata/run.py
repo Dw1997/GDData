@@ -66,7 +66,15 @@ def renews():
 	i = int(num)
 	x = Renews()
 	data = x.fkrenews(i)
-	return jsonify(data)
+	return jsonify({'result':data})
+
+@app.route('/api/addlog',methods=['post','get'])
+def addlogs():
+	user = request.args.get('user')
+	newsid = request.args.get('id')
+	x = Renews()
+	result = x.addlog(newsid,user)
+	return jsonify({'result':result})
 
 @app.route('/zhy/api/login',methods = ['post','get'])
 def zhylogin():
