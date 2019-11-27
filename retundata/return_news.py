@@ -42,7 +42,37 @@ class Renews():
             result='fail'
         # print(tablename)
         return result
+    
+    def top20(self):
+        listr = []
+        table = str(datetime.datetime.now().year) + \
+            str(datetime.datetime.now().month)
+        sql = "SELECT newid,count(*) FROM `%s` GROUP BY newid ORDER BY COUNT(1) DESC LIMIT 20" % table
+        try:
+            listn = []   
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            for i in res:
+                # print(i[0])
+                listn.append(i[0])
+            for d in listn:
+                sqln = "select * from `school_news` where newid='%s'" % d
+                # print(sqln)
+                self.cursor.execute(sqln)
+                resn = self.cursor.fetchall()
+                for n in resn:
+                    listr.append(
+                        dict(zip(['num', 'id', 'url', 'date', 'impa', 'title', 'state'], list(n))))
+                # print(listn)
+        except:
+            # print(listr)
+            self.db.rollback()
+            # print(sql)
+        return listr
 
-# x=Renews()
+
+x = Renews()
+listp = x.top20()
+print(listp)
 # x.addlog('1','1')
 # print(datetime.datetime.now())

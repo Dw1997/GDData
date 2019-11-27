@@ -76,6 +76,12 @@ def addlogs():
 	result = x.addlog(newsid,user)
 	return jsonify({'result':result})
 
+@app.route('/api/top20',methods=['get','post'])
+def top20n():
+	x = Renews()
+	result = x.top20()
+	return jsonify({'result':result})
+
 @app.route('/zhy/api/login',methods = ['post','get'])
 def zhylogin():
 	user = request.args.get('name')
@@ -134,7 +140,45 @@ def zhyorders():
 	result = x.orders(whoo,userphone,gp)
 	return jsonify({'result':result})
 
+@app.route('/zhy/api/poster_send',methods=['post','get'])
+def zhyposter_send():
+	phone = request.args.get('ph')
+	addr = request.args.get('ad')
+	areaid = request.args.get('ai')
+	x = ZHY_Login_Reg()
+	result = x.poster_send(phone,addr,areaid)
+	return jsonify({'result':result})
 
+@app.route('/zhy/api/user_send',methods=['get','post'])
+def zhyuser_send():
+	uphone = request.args.get('up')
+	gname = request.args.get('gn')
+	gphone = request.args.get('gh')
+	gaddr = request.args.get('ga')
+	x = ZHY_Login_Reg()
+	result = x.user_send(uphone,gname,gphone,gaddr)
+	return jsonify({'result':result})
+
+@app.route('/zhy/api/user_out',methods=['get','post'])
+def zhyuser_out():
+	phone = request.args.get('ph')
+	x = ZHY_Login_Reg()
+	result = x.return_out(phone)
+	return jsonify({'result':result})
+	
+@app.route('/zhy/api/gp',methods=['get','post'])
+def zhyuser_out_all():
+	x = ZHY_Login_Reg()
+	result = x.return_out_all()
+	return jsonify({'result':result})
+
+@app.route('/zhy/api/gper',methods=['get','post'])
+def zhyget_per():
+	typee = request.args.get('tp')
+	aid = request.args.get('aid')
+	x = ZHY_Login_Reg()
+	result = x.return_per(typee,aid)
+	return jsonify({'resule':result})
 
 if __name__=='__main__':
 	app.config['JSON_AS_ASCII'] = False

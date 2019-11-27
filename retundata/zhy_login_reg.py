@@ -1,4 +1,7 @@
 import pymysql
+import math
+import random
+import datetime
 
 class ZHY_Login_Reg():
 
@@ -93,10 +96,101 @@ class ZHY_Login_Reg():
             self.db.rollback()
             res = False
         return res
+    
+    def poster_send(self, phone, addr, areaid):
+        sql = "select userphone from user where useraddr='%s' and areaid='%s' "%(addr,areaid)
+        orderid = str(math.floor(1e7 * random.random()))
+        data = str(datetime.datetime.now().date())
+        time = str(datetime.datetime.now().time()).split('.')[0]
+        time1 = data+' '+time
+        lista = []
+        ret = False
+        try:
+            self.cursor.execute(sql)
+            result = self.cursor.fetchall()
+            for i in result:
+                print(i[0])
+                lista.append(i[0])
+            for d in lista:
+                sqld = "insert into `orderlist` values ('%s','%s','%s','%s','%s','%s')"%(orderid,d,phone,'0','1',time1)
+                print(sqld)
+                self.cursor.execute(sqld)
+                self.db.commit()
+            ret = True
+        except:
+            ret = False
+            self.db.rollback()
+        return ret
+    
+    def user_send(self,uphone,gname,gphone,gaddr):
+        sql = "select username,useraddr,areaid from user where userphone=%s"%uphone
+        id = str(math.floor(1e7 * random.random()))
+        data = str(datetime.datetime.now().date())
+        time = str(datetime.datetime.now().time()).split('.')[0]
+        time1 = data+' '+time
+        ret = False
+        try:
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            name = res[0][0]
+            addid = res[0][1]
+            areaid = res[0][2]
+            uaddr = areaid+'-'+addid
+            print(name,uaddr)
+            sqld = "insert into `sendlist` values ('%s','%s','%s','%s','%s','%s','%s','%s')"%(id,name,uphone,uaddr,gname,gphone,gaddr,time1)
+            print(sqld)
+            self.cursor.execute(sqld)
+            self.db.commit()
+            ret = True
+        except:
+            self.db.rollback()
+        
+        return ret
+    
+    def return_out(self,phone):
+        sql = "select * from sendlist where uphone=%s"%phone
+        listr = []
+        try:
+            self.cursor.execute(sql)
+            result = self.cursor.fetchall()
+            for i in result:
+                listr.append(dict(zip(['id','uname','uphone','uaddr','gname','gphone','gaddr','time','state'],list(i))))
+            print(listr)
+        except:
+            self.db.rollback()
+        return listr
+    
+    def return_out_all(self):
+        sql = "select * from sendlist where state=0"
+        listr = []
+        try:
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            for i in res:
+                listr.append(dict(zip(['id', 'uname', 'uphone', 'uaddr',
+                                       'gname', 'gphone', 'gaddr', 'time', 'state'], list(i))))
+            print(listr)
+        except:
+            self.db.rollback()
+        return listr
+    
+    def return_per(self,typee,areaid):
+        listr = []
+        sql = "select * from user where usertype=%s and areaid=%s"%(typee,areaid)
+        try:
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            for i in res:
+                listr.append(dict(zip(['userphone','username','userpass','usertype','usertype','useraddr','areaid'],list(i))))
+            print(listr)
+        except:
+            self.db.rollback()
+        return listr
 
 
+                
 dw = ZHY_Login_Reg()
-re = dw.orders('getuser','10000',0)
+re = dw.return_per('1','00001')
 print(re)
 # re2 = dw.register('zhy_3','dw','12345a','6单元405')
 # dw = Login_Reg()
@@ -106,4 +200,7 @@ print(re)
 # print(re2)
 # re3 = dw.check('15579760328',hashlib.md5('Dwzx5201314'.encode('utf8')).hexdigest())
 # print(re3)
+# getpost=1 快递员送 用户收
+# getpost=0 快递员取 用户发
+
 

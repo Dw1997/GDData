@@ -1,4 +1,5 @@
 import pymysql
+import datetime
 def getnewid(cursor):
     sql = 'select newid from school_news'
     cursor.execute(sql)
@@ -14,13 +15,17 @@ def update(cursor, newid, i):
 
 
 if __name__ == "__main__":
-    db = pymysql.connect('localhost', 'root', 'Dwzx170322',
-                             'graduate_design', charset='utf8')
-    cursor = db.cursor()
-    a=0
-    for i in getnewid(cursor):
-        update(cursor,i,a)
-        a+=1
+    # db = pymysql.connect('localhost', 'root', 'Dwzx170322',
+    #                          'graduate_design', charset='utf8')
+    # cursor = db.cursor()
+    # a=0
+    # for i in getnewid(cursor):
+    #     update(cursor,i,a)
+    #     a+=1
 
-    db.commit()
+    # db.commit()
+    data = str(datetime.datetime.now().date())
+    time = str(datetime.datetime.now().time()).split('.')[0]
+    time1 = data+' '+time
+    print(time1)
 
