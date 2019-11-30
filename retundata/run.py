@@ -131,6 +131,7 @@ def zhychagnge():
 	return jsonify({'result':result})
 
 
+# 获取小区内快递
 @app.route('/zhy/api/orders',methods=['post','get'])
 def zhyorders():
 	whoo = request.args.get('who')
@@ -165,11 +166,13 @@ def zhyuser_out():
 	x = ZHY_Login_Reg()
 	result = x.return_out(phone)
 	return jsonify({'result':result})
-	
+
+# 快递员根据小区id获取要发出快递	
 @app.route('/zhy/api/gp',methods=['get','post'])
 def zhyuser_out_all():
+	areaid = request.args.get('ai')
 	x = ZHY_Login_Reg()
-	result = x.return_out_all()
+	result = x.return_out_all(areaid)
 	return jsonify({'result':result})
 
 @app.route('/zhy/api/gper',methods=['get','post'])
@@ -179,6 +182,75 @@ def zhyget_per():
 	x = ZHY_Login_Reg()
 	result = x.return_per(typee,aid)
 	return jsonify({'resule':result})
+
+@app.route('/zhy/api/gan',methods=['get','post'])
+def zhyget_an():
+	typee = request.args.get('tp')
+	uphone = request.args.get('up')
+	x = ZHY_Login_Reg()
+	result = x.return_inf_n_a(typee,uphone)
+	return jsonify({'result':result})
+
+@app.route('/zhy/api/getubp',methods=['get','post'])
+def zhyget_user_b_p():
+	uphone = request.args.get('up')
+	x = ZHY_Login_Reg()
+	result = x.return_user(uphone)
+	return jsonify({'result':result})
+
+# 快递员确认到家提取快递
+@app.route('/zhy/api/getoit', methods=['get', 'post'])
+def zhyget_out_it():
+	itid = request.args.get('id')
+	poser = request.args.get('ph')
+	x = ZHY_Login_Reg()
+	result = x.poser_get_it(itid,poser)
+	return jsonify({'result':result})
+
+# 用户给订单添加评论
+@app.route('/zhy/api/uc', methods=['get', 'post'])
+def zhy_uc():
+	id = request.args.get('id')
+	up = request.args.get('up')
+	pp = request.args.get('pp')
+	co = request.args.get('co')
+	x = ZHY_Login_Reg()
+	result = x.add_comment(id,up,pp,co)
+	return jsonify({'result':result})
+
+# 快递员确认园区内快递送达
+@app.route('/zhy/api/sis',methods=['get','post'])
+def zhy_sure_sended():
+	id = request.args.get('id')
+	x  = ZHY_Login_Reg()
+	result = x.send_it(id)
+	return jsonify({'result':result})
+
+# 用户派送订单获取派送信息
+@app.route('/zhy/api/ugp',methods=['get','post'])
+def zhy_get_poser_inf():
+	id = request.args.get('id')
+	x = ZHY_Login_Reg()
+	resurt = x.get_out_poser(id)
+	return jsonify({'result':resurt})
+
+# 快递员获取须发快递单子
+@app.route('/zhy/api/nso',methods=['get','post'])
+def zhy_get_n_out():
+	id = request.args.get('id')
+	x = ZHY_Login_Reg()
+	resurt = x.get_out_orders(id)
+	return jsonify({'result': resurt})
+
+# 快递员给须发送快递添加运单号
+@app.route('/zhy/api/ansi',methods=['get','post'])
+def zhy_add_id_ns():
+	id = request.args.get('id')
+	kid = request.args.get('kid')
+	x = ZHY_Login_Reg()
+	result = x.ins_out_kdi(id,kid)
+	return jsonify({'result':result})
+
 
 if __name__=='__main__':
 	app.config['JSON_AS_ASCII'] = False

@@ -81,7 +81,11 @@ class ZHY_Login_Reg():
         return res
 
     def orders(self,who,userphone,gp):
-        sql = "select * from orderlist where %s=%s and getpost=%s"%(who,userphone,gp)
+        if who=='getuser':
+            sql = "select * from orderlist where %s=%s and getpost=%s"%(who,userphone,gp)
+        if who=='poster':
+            sql = "select * from orderlist where %s=%s and getpost=%s and state=0" % (
+                who, userphone, gp)
         print(sql)
         listo = []
         try:
@@ -133,11 +137,10 @@ class ZHY_Login_Reg():
             self.cursor.execute(sql)
             res = self.cursor.fetchall()
             name = res[0][0]
-            addid = res[0][1]
+            uaddr = res[0][1]
             areaid = res[0][2]
-            uaddr = areaid+'-'+addid
             print(name,uaddr)
-            sqld = "insert into `sendlist` values ('%s','%s','%s','%s','%s','%s','%s','%s')"%(id,name,uphone,uaddr,gname,gphone,gaddr,time1)
+            sqld = "insert into `sendlist` values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%a')"%(id,name,uphone,areaid,uaddr,gname,gphone,gaddr,time1,'0','0','0')
             print(sqld)
             self.cursor.execute(sqld)
             self.db.commit()
@@ -148,50 +151,194 @@ class ZHY_Login_Reg():
         return ret
     
     def return_out(self,phone):
+        '''
+        用户获取发送到外面的快递
+        '''
         sql = "select * from sendlist where uphone=%s"%phone
         listr = []
         try:
             self.cursor.execute(sql)
             result = self.cursor.fetchall()
             for i in result:
-                listr.append(dict(zip(['id','uname','uphone','uaddr','gname','gphone','gaddr','time','state'],list(i))))
+                listr.append(dict(zip(['id','uname','uphone','areaid','uaddr','gname','gphone','gaddr','time','state','poster','kuaidid'],list(i))))
             print(listr)
         except:
             self.db.rollback()
         return listr
     
-    def return_out_all(self):
-        sql = "select * from sendlist where state=0"
+    def return_out_all(self,areaid):
+        '''
+        快递员获取发送到小区外的快递
+        '''
+        sql = "select * from sendlist where state=0 and areaid=%s"%areaid
         listr = []
         try:
             self.cursor.execute(sql)
             res = self.cursor.fetchall()
             for i in res:
-                listr.append(dict(zip(['id', 'uname', 'uphone', 'uaddr',
-                                       'gname', 'gphone', 'gaddr', 'time', 'state'], list(i))))
+                listr.append(dict(zip(['id', 'uname', 'uphone', 'areaid', 'uaddr',
+                                       'gname', 'gphone', 'gaddr', 'time', 'state','poster','kuaidid'], list(i))))
             print(listr)
         except:
             self.db.rollback()
         return listr
     
     def return_per(self,typee,areaid):
+        '''
+        获取小区内所有用户，快递员
+        '''
         listr = []
         sql = "select * from user where usertype=%s and areaid=%s"%(typee,areaid)
         try:
             self.cursor.execute(sql)
             res = self.cursor.fetchall()
             for i in res:
-                listr.append(dict(zip(['userphone','username','userpass','usertype','usertype','useraddr','areaid'],list(i))))
+                listr.append(dict(zip(['userphone','username','userpass','usertype','useraddr','areaid'],list(i))))
+            print(listr)
+        except:
+            self.db.rollback()
+        return listr
+    
+    def return_inf_n_a(self,utype,uphone):
+        '''
+        返回园区内用户地址或者快递员名字
+        '''
+        if utype=='1':
+            sql = "select username from `user` where userphone=%s"%uphone
+        if utype=='2':
+            sql = "select useraddr from `user` where userphone=%s"%uphone
+        try:
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            result =res[0][0]
+            print(res,result)
+        except:
+            print(sql)
+        return result
+    
+    def return_user(self,uphone):
+        '''
+        根据手机号获取用户信息
+        '''
+        sql = "select * from user where userphone=%s"%uphone
+        dicta = {}
+        try:
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            print(res)
+            dicta = dict(zip(['userphone', 'username', 'userpass',
+                               'usertype', 'useraddr', 'areaid'], list(res[0])))
+        except:
+            self.db.rollback()
+            print(sql)
+        return dicta
+
+    def poser_get_it(self,itid,poser):
+        '''
+        快递员到家取快递时，跟新数据库
+        '''
+        sql = "UPDATE `sendlist` SET state='1',poster='%s' WHERE id='%s'"%(poser,itid)
+        print(sql)
+        result = False
+        try:
+            self.cursor.execute(sql)
+            self.db.commit()
+            result = True
+        except:
+            result = False
+            self.db.rollback()
+        return result
+    
+    def add_comment(self,id,up,pp,co):
+        '''
+        用户给快递订单评论
+        '''
+        result = False
+        data = str(datetime.datetime.now().date())
+        time = str(datetime.datetime.now().time()).split('.')[0]
+        time1 = data+' '+time
+        sql = "insert into `comments` values ('%s','%s','%s','%s','%s')"%(id,up,pp,co,time1)
+        print(sql)
+        try:
+            self.cursor.execute(sql)
+            self.db.commit()
+            result = True
+        except:
+            self.db.rollback()
+            result = False
+        return result
+
+    def send_it(self,id):
+        '''
+        园区内快递确认送达、跟新数据库
+        '''
+        sql = "UPDATE `orderlist` SET state='1' WHERE orderids='%s'"%id
+        print(sql)
+        result = False
+        try:
+            self.cursor.execute(sql)
+            self.db.commit()
+            result = True
+        except:
+            result = False
+            self.db.rollback()
+        return result
+    
+    def get_out_poser(self,id):
+        '''
+        获取派件人员信息
+        '''
+        sql = "select poster,kuaidid from `sendlist` where id=%s"%id
+        dicta = {}
+        try:
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            print(res)
+            poster = res[0][0]
+            kuaidid = res[0][1]
+            sqld = "select username from user where userphone=%s"%poster
+            self.cursor.execute(sqld)
+            resd = self.cursor.fetchall()
+            print(resd)
+            name = resd[0][0]
+            dicta = dict(zip(['name','phone','kuaidid'],[name,poster,kuaidid]))
+        except:
+            self.db.rollback()
+            print(sql,sqld)
+        return dicta
+    
+    def get_out_orders(self,ph):
+        sql = "select * from `sendlist` where poster=%s and state=1"%ph
+        listr = []
+        listr = []
+        try:
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            for i in res:
+                listr.append(dict(zip(['id', 'uname', 'uphone', 'areaid', 'uaddr',
+                                       'gname', 'gphone', 'gaddr', 'time', 'state', 'poster', 'kuaidid'], list(i))))
             print(listr)
         except:
             self.db.rollback()
         return listr
 
+    def ins_out_kdi(self,id,kid):
+        sql = "update `sendlist` set state='3',kuaidid=%s where id=%s"%(kid,id)
+        result = False
+        try:
+            self.cursor.execute(sql)
+            self.db.commit()
+            result=True
+        except:
+            self.db.rollback()
+            print(sql)
+        return result
 
-                
+
 dw = ZHY_Login_Reg()
-re = dw.return_per('1','00001')
-print(re)
+x = dw.ins_out_kdi('8597267', '2282665761')
+print(x)
+
 # re2 = dw.register('zhy_3','dw','12345a','6单元405')
 # dw = Login_Reg()
 # re = dw.check('18930913829','123')
