@@ -82,6 +82,14 @@ def top20n():
 	result = x.top20()
 	return jsonify({'result':result})
 
+@app.route('/api/search',methods=['get','post'])
+def searchnews():
+	typee = request.args.get('tp')
+	searcchitem = request.args.get('it')
+	x = Renews()
+	result = x.newsearch(typee,searcchitem)
+	return jsonify({'result':result})
+
 @app.route('/zhy/api/login',methods = ['post','get'])
 def zhylogin():
 	user = request.args.get('name')

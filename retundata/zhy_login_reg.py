@@ -165,7 +165,7 @@ class ZHY_Login_Reg():
         except:
             self.db.rollback()
         return listr
-    
+
     def return_out_all(self,areaid):
         '''
         快递员获取发送到小区外的快递
