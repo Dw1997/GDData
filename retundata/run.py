@@ -76,6 +76,46 @@ def addlogs():
 	result = x.addlog(newsid,user)
 	return jsonify({'result':result})
 
+@app.route('/api/addlog2',methods=['post','get'])
+def addlogs2():
+	newid = request.args.get('nid')
+	pid = request.args.get('pid')
+	ty = request.args.get('tp')
+	x = Renews()
+	result = x.addlog2(newid,pid,ty)
+	return jsonify({'result':result})
+
+
+@app.route('/api/delcon',methods=['post','get'])
+def delcolnew():
+	newdi = request.args.get('id')
+	pg = request.args.get('ph')
+	x = Renews()
+	result = x.delcon(newdi,pg)
+	return jsonify({'result': result})
+
+
+@app.route('/api/coat',methods=['post','get'])
+def rcoat():
+	tp = request.args.get('tp')
+	x = Renews()
+	result = x.rcogo(tp)
+	return jsonify({'result':result})
+
+@app.route('/api/uco',methods=['get','post'])
+def ruco():
+	ph = request.args.get('ph')
+	x = Renews()
+	result = x.ruco(ph)
+	return jsonify({'result': result})
+
+@app.route('/api/deln',methods=['get','post'])
+def delnew():
+	id = request.args.get('id')
+	x = Renews()
+	result = x.deln(id)
+	return jsonify({'result': result})
+
 @app.route('/api/top20',methods=['get','post'])
 def top20n():
 	x = Renews()
@@ -258,6 +298,24 @@ def zhy_add_id_ns():
 	x = ZHY_Login_Reg()
 	result = x.ins_out_kdi(id,kid)
 	return jsonify({'result':result})
+
+
+@app.route('/zhy/api/repoc',methods=['get','post'])
+def zhy_ret_poco():
+	ph = request.args.get('ph')
+	x = ZHY_Login_Reg()
+	result = x.re_po_co(ph)
+	return jsonify({'result':result})
+
+@app.route('/zhy/api/deluser', methods=['get', 'post'])
+def zhy_del_user():
+	ph = request.args.get('ph')
+	x = ZHY_Login_Reg()
+	result = x.deluser(ph)
+	return jsonify({'result': result})
+
+
+
 
 
 if __name__=='__main__':

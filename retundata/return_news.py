@@ -16,7 +16,7 @@ class Renews():
             results = self.cursor.fetchall()
             listtable = []
             for row in results:
-                dictn = dict(zip(['num','id','url','date','impa','title','state'],list(row)))
+                dictn = dict(zip(['num','id','url','date','year','month','day','impa','title','state'],list(row)))
                 listtable.append(dictn)
         except:
             self.db.rollback()
@@ -42,6 +42,80 @@ class Renews():
             result='fail'
         # print(tablename)
         return result
+
+    def addlog2(self,newsid,user,idtp):
+        date = datetime.datetime.now().date()
+        tablename = str(date.year)+str(date.month)+'log'
+        sql = "CREATE TABLE IF NOT EXISTS `%s` (newid varchar(20) NOT NULL,user varchar(20) default NULL,date varchar(28) default NULL,idtp varchar(1) default NULL);"%tablename
+        result = False
+        try:
+            self.cursor.execute(sql)
+            sqld = "insert into `%s` values ('%s','%s','%s','%s')" % (
+                tablename, newsid, user, str(datetime.datetime.now()),idtp)
+            self.cursor.execute(sqld)
+            self.db.commit()
+            result = 'true'
+        except:
+            self.db.rollback()
+            result = False
+        return result
+
+    def rcogo(self,ty):
+        listr = []
+        date = datetime.datetime.now().date()
+        tablename = str(date.year)+str(date.month)+'log'
+        sql = "select newid from `%s` where idtp='%s'"%(tablename,ty)
+        try:
+            listn = []
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            for i in res:
+                # print(i[0])
+                listn.append(i[0])
+            for d in listn:
+                sqln = "select * from `school_news` where newid='%s'" % d
+                # print(sqln)
+                self.cursor.execute(sqln)
+                resn = self.cursor.fetchall()
+                for n in resn:
+                    listr.append(
+                        dict(zip(['num', 'id', 'url', 'date', 'year', 'month', 'day', 'impa', 'title', 'state'], list(n))))
+                # print(listn)
+        except:
+            # print(listr)
+            self.db.rollback()
+            # print(sql)
+        return listr
+    
+    def ruco(self,ph):
+        listr = []
+        date = datetime.datetime.now().date()
+        tablename = str(date.year)+str(date.month)+'log'
+        sql = "select * from `%s` where user='%s'"%(tablename,ph)
+        try:
+            listn = []
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            for i in res:
+                # print(i[0])
+                listn.append(i[0])
+
+            listb = list(set(listn))
+            for d in listb:
+                sqln = "select * from `school_news` where newid='%s'" % d
+                # print(sqln)
+                self.cursor.execute(sqln)
+                resn = self.cursor.fetchall()
+                for n in resn:
+                    listr.append(
+                        dict(zip(['num', 'id', 'url', 'date', 'year', 'month', 'day', 'impa', 'title', 'state'], list(n))))
+                # print(listn)
+        except:
+            # print(listr)
+            self.db.rollback()
+            # print(sql)
+        return listr
+
     
     def top20(self):
         listr = []
@@ -185,11 +259,38 @@ class Renews():
         except:
             print('error')
             result=False
-        return listr
+        return listr[:10]
+
+
+    def deln(self,id):
+        sql = "delete from `school_news` where newid='%s'"%id
+        result = False
+        try:
+            self.cursor.execute(sql)
+            self.db.commit()
+            result=True
+        except:
+            self.db.rollback()
+        return result
+
+    def delcon(self,id,ph):
+        date = datetime.datetime.now().date()
+        tablename = str(date.year)+str(date.month)+'log'
+        sql = "delete from `%s` where newid='%s' and user='%s' and idtp='0'"%(tablename,id,ph)
+        result = False
+        try:
+            self.cursor.execute(sql)
+            self.db.commit()
+            result = True
+        except:
+            self.db.rollback()
+        return result
+
+
 
 
 
 x = Renews()
-x.newsearch('2','201910')
-# x.addlog('1','1')
+d = x.delcon('c2088a81431', '18930913829')
+print(d)
 # print(datetime.datetime.now())

@@ -127,7 +127,7 @@ class ZHY_Login_Reg():
         return ret
     
     def user_send(self,uphone,gname,gphone,gaddr):
-        sql = "select username,useraddr,areaid from user where userphone=%s"%uphone
+        sql = "select username,useraddr,areaid from `user` where userphone=%s"%uphone
         id = str(math.floor(1e7 * random.random()))
         data = str(datetime.datetime.now().date())
         time = str(datetime.datetime.now().time()).split('.')[0]
@@ -140,14 +140,13 @@ class ZHY_Login_Reg():
             uaddr = res[0][1]
             areaid = res[0][2]
             print(name,uaddr)
-            sqld = "insert into `sendlist` values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%a')"%(id,name,uphone,areaid,uaddr,gname,gphone,gaddr,time1,'0','0','0')
+            sqld = "insert into `sendlist` values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"%(id,name,uphone,areaid,uaddr,gname,gphone,gaddr,time1,'0','0','0')
             print(sqld)
             self.cursor.execute(sqld)
             self.db.commit()
             ret = True
         except:
-            self.db.rollback()
-        
+            self.db.rollback() 
         return ret
     
     def return_out(self,phone):
@@ -333,10 +332,38 @@ class ZHY_Login_Reg():
             self.db.rollback()
             print(sql)
         return result
+    
+    def re_po_co(self,ph):
+        listr = []
+        sql = "select * from `comments` where poserphone='%s'"%ph
+        try:
+            print(sql)
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            for o in res:
+                print(o)
+                listr.append(
+                    dict(zip(['id', 'user', 'poser', 'comm', 'time'], list(o))))
+            print(listr)
+        except:
+            self.db.rollback()
+        return listr
+
+    def deluser(self,ph):
+        result = False
+        sql = "delete from `user` where userphone='%s'"%ph
+        try:
+            self.cursor.execute(sql)
+            self.db.commit()
+            result = True
+        except:
+            self.db.rollback()
+        return result
+
 
 
 dw = ZHY_Login_Reg()
-x = dw.ins_out_kdi('8597267', '2282665761')
+x = dw.deluser('15579760328')
 print(x)
 
 # re2 = dw.register('zhy_3','dw','12345a','6单元405')
