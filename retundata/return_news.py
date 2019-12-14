@@ -286,11 +286,29 @@ class Renews():
             self.db.rollback()
         return result
 
+    def re_news_n(self,typee,num):
+        listn = []
+        if typee==0:
+            sql = "select * from `news_new` order by newsdate desc limit  %s,%s"%(num*10,20)
+        else:
+            sql = "select * from `news_new` where newstype='%s' order by newsdate desc limit  %s,%s" % (
+                typee,num*10,20)
+        try:
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            for i in res:
+                dicts = dict(zip(['newsid','newstype','newstitle','newsurl','newsimpa','newsdate','newsstate'],list(i)))
+                listn.append(dicts)
+        
+        except:
+            print(sql)
+        
+        return listn
 
 
 
 
 x = Renews()
-d = x.delcon('c2088a81431', '18930913829')
-print(d)
+d = x.re_news_n('0',1)
+print(len(d))
 # print(datetime.datetime.now())
