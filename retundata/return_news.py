@@ -8,6 +8,9 @@ class Renews():
 
 
     def fkrenews(self,num):
+        '''
+        返回新闻（旧）
+        '''
         sql = "SELECT * FROM `school_news` ORDER BY newno limit  %s,%s" % (
             num*10, 20)
         print(sql)
@@ -24,6 +27,9 @@ class Renews():
         return listtable
     
     def addlog(self,newsid,user):
+        '''
+        每月添加新闻点击量log
+        '''
         date = datetime.datetime.now().date()
         tablename = str(date.year)+str(date.month)
         sql = "CREATE TABLE IF NOT EXISTS `%s` (newid varchar(20) NOT NULL,user varchar(20) default NULL,date varchar(28) default NULL);"%tablename
@@ -44,6 +50,9 @@ class Renews():
         return result
 
     def addlog2(self,newsid,user,idtp):
+        '''
+        用户收藏、赞、举报新闻
+        '''
         date = datetime.datetime.now().date()
         tablename = str(date.year)+str(date.month)+'log'
         sql = "CREATE TABLE IF NOT EXISTS `%s` (newid varchar(20) NOT NULL,user varchar(20) default NULL,date varchar(28) default NULL,idtp varchar(1) default NULL);"%tablename
@@ -61,6 +70,9 @@ class Renews():
         return result
 
     def rcogo(self,ty):
+        '''
+        返回用户收藏、点赞、举报新闻
+        '''
         listr = []
         date = datetime.datetime.now().date()
         tablename = str(date.year)+str(date.month)+'log'
@@ -73,13 +85,13 @@ class Renews():
                 # print(i[0])
                 listn.append(i[0])
             for d in listn:
-                sqln = "select * from `school_news` where newid='%s'" % d
+                sqln = "select * from `news_new` where newsid='%s'" % d
                 # print(sqln)
                 self.cursor.execute(sqln)
                 resn = self.cursor.fetchall()
                 for n in resn:
                     listr.append(
-                        dict(zip(['num', 'id', 'url', 'date', 'year', 'month', 'day', 'impa', 'title', 'state'], list(n))))
+                        dict(zip(['newsid', 'newstype', 'newstitle', 'newsurl', 'newsimpa', 'newsdate', 'newsstate'], list(n))))
                 # print(listn)
         except:
             # print(listr)
@@ -88,6 +100,9 @@ class Renews():
         return listr
     
     def ruco(self,ph):
+        '''
+        返回用户收藏新闻
+        '''
         listr = []
         date = datetime.datetime.now().date()
         tablename = str(date.year)+str(date.month)+'log'
@@ -102,13 +117,13 @@ class Renews():
 
             listb = list(set(listn))
             for d in listb:
-                sqln = "select * from `school_news` where newid='%s'" % d
+                sqln = "select * from `news_new` where newsid='%s'" % d
                 # print(sqln)
                 self.cursor.execute(sqln)
                 resn = self.cursor.fetchall()
                 for n in resn:
                     listr.append(
-                        dict(zip(['num', 'id', 'url', 'date', 'year', 'month', 'day', 'impa', 'title', 'state'], list(n))))
+                        dict(zip(['newsid', 'newstype', 'newstitle', 'newsurl', 'newsimpa', 'newsdate', 'newsstate'], list(n))))
                 # print(listn)
         except:
             # print(listr)
@@ -118,6 +133,9 @@ class Renews():
 
     
     def top20(self):
+        '''
+        返回本月点击最高新闻
+        '''
         listr = []
         table = str(datetime.datetime.now().year) + \
             str(datetime.datetime.now().month)
@@ -130,13 +148,13 @@ class Renews():
                 # print(i[0])
                 listn.append(i[0])
             for d in listn:
-                sqln = "select * from `school_news` where newid='%s'" % d
+                sqln = "select * from `news_new` where newsid='%s'" % d
                 # print(sqln)
                 self.cursor.execute(sqln)
                 resn = self.cursor.fetchall()
                 for n in resn:
                     listr.append(
-                        dict(zip(['num', 'id', 'url', 'date','year','month','day', 'impa', 'title', 'state'], list(n))))
+                        dict(zip(['newsid', 'newstype', 'newstitle', 'newsurl','newsimpa','newsdate','newsstate'], list(n))))
                 # print(listn)
         except:
             # print(listr)
@@ -145,6 +163,9 @@ class Renews():
         return listr
 
     def newsearch(self,typee,inf):
+        '''
+        搜索新闻
+        '''
         year1='0'
         month='0'
         day='0'
@@ -263,7 +284,10 @@ class Renews():
 
 
     def deln(self,id):
-        sql = "delete from `school_news` where newid='%s'"%id
+        '''
+        根据新闻id删除新闻
+        '''
+        sql = "delete from `news_new` where newsid='%s'"%id
         result = False
         try:
             self.cursor.execute(sql)
@@ -274,6 +298,9 @@ class Renews():
         return result
 
     def delcon(self,id,ph):
+        '''
+        取消收藏的新闻
+        '''
         date = datetime.datetime.now().date()
         tablename = str(date.year)+str(date.month)+'log'
         sql = "delete from `%s` where newid='%s' and user='%s' and idtp='0'"%(tablename,id,ph)
