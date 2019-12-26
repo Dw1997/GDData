@@ -13,8 +13,8 @@ class News(object):
             'https://news.gench.edu.cn/2088/list.htm',
             'https://news.gench.edu.cn/2089/list.htm'
         ]
-        self.writer = csv.writer(open('news.csv','w',encoding='utf-8',newline=''))
-        self.reader = csv.reader(open('news.csv','r',encoding='utf-8'))
+        self.writer = csv.writer(open('./getdata/news.csv','w',encoding='utf-8',newline=''))
+        self.reader = csv.reader(open('./getdata/news.csv','r',encoding='utf-8'))
         self.db = pymysql.connect('localhost','root','Dwzx170322','graduate_design',charset='utf8')
         self.cursor = self.db.cursor()
     
@@ -67,7 +67,7 @@ class News(object):
 
     def main(self):
         for typee,url in enumerate(self.urls):
-            for i in range(1,31):
+            for i in range(1,2):
                 url1 = url[:-4]
                 url2 = url[-4:]
                 urln = url1+str(i)+url2

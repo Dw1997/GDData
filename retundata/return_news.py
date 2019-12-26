@@ -1,5 +1,6 @@
 import pymysql
 import datetime
+import re
 class Renews():
 
     def __init__(self):
@@ -166,121 +167,31 @@ class Renews():
         '''
         搜索新闻
         '''
-        year1='0'
-        month='0'
-        day='0'
+        listn = []
         if typee=='1':
-            searchitem='newtitle'
             item = '%'
             for i in range(len(inf)):
                 item = item+inf[i]
             item = item+'%'
-            sql = "select * from `school_news` where newtitle like '%s'"%item
+            sql = "select * from `news_new` where newstitle like '%s' order by newsdate desc"%item
         if typee=='2':
-            longi = len(inf)
-            #时间中有. 例如2019.1.1 1.1
-            if '.' in inf:
-                hh = inf.split('.')
-                if len(hh)==3:
-                    year = hh[0]
-                    if len(year)==4:
-                        year1=year
-                    if len(year)==2:
-                        year1='20'+year
-                    month = hh[1]
-                    day = hh[2]
-                if len(hh)==2:
-                    month = hh[0]
-                    day = hh[1]
-            # 时间中有 ' '，例如2019 10 9，10 9
-            elif ' ' in inf:
-                hh = inf.split(' ')
-                if len(hh) == 3:
-                    year = hh[0]
-                    if len(year) == 4:
-                        year1 = year
-                    if len(year) == 2:
-                        year1 = '20'+year
-                    month = hh[1]
-                    day = hh[2]
-                if len(hh) == 2:
-                    month = hh[0]
-                    day = hh[1]
-            # 时间中有'/'，例如2019/10/9 10/9
-            elif '/' in inf:
-                hh = inf.split('/')
-                if len(hh) == 3:
-                    year = hh[0]
-                    if len(year) == 4:
-                        year1 = year
-                    if len(year) == 2:
-                        year1 = '20'+year
-                    month = hh[1]
-                    day = hh[2]
-                if len(hh) == 2:
-                    month = hh[0]
-                    day = hh[1]
-
-            elif ' ' not in inf and '/' not in inf and ' ' not in inf:
-                year1='2019'
-                if len(inf)==8:
-                    year1 = inf[0:4]
-                    month = inf[4:6]
-                    day = inf[6:]
-                if len(inf)==6:
-                    if inf[0:2]=='20':
-                        year1 = inf[0:4]
-                        month = inf[4:]
-                    else:
-                        year1=inf[0:2]
-                        month=inf[2:4]
-                        day = inf[4:]
-                if len(inf)==4:
-                    if inf[0:2]=='20':
-                        year1 = inf[0:4]
-                        month = inf[4:]
-                    else:
-                        month=inf[0:2]
-                        day=inf[2:]
-                if len(inf)==2:
-                    month = inf[0:1]
-                    day = inf[1:2]
-                if len(inf)==3:
-                    if inf[1]>'3':
-                        month=inf[0:2]
-                        day=inf[2]
-                    else:
-                        month=inf[0]
-                        day=inf[1:]
-
-            print(year1,month,day)
-            if month!='0' and day!='0' and year1!='0':
-                sql = "select * from `school_news` where newmonth='%s' and newday='%s' and newyear='%s'"%(month,day,year1)
-            elif month!='0' and year1!='0':
-                sql = "select * from `school_news` where newmonth='%s' and newyear='%s'"%(month,year1)
-            elif month!='0' and year1!='0':
-                sql = "select * from `school_news` where newmonth='%s' and newday='%s'"%(month, day)
-            else:
-                item = '%'
-                for i in range(len(inf)):
-                    item = item+inf[i]
-                item = item+'%'
-                sql = "select * from `school_news` where newdate like '%s'"%item
+            listi = re.findall(r'\d+',inf)
+            datee = ''
+            for d in listi:
+                datee = datee+d
+            datee = '%'+datee+'%'
+            sql = "select * from `news_new` where newsdate like '%s' order by newsdate desc" % datee
         
-        print(sql)
-        result = False
-        listr = []
         try:
             self.cursor.execute(sql)
             res = self.cursor.fetchall()
             for i in res:
-                print(i)
-                listr.append(
-                    dict(zip(['num', 'id', 'url', 'date', 'year', 'month', 'day', 'impa', 'title', 'state'], list(i))))
+                dicts = dict(zip(['newsid', 'newstype', 'newstitle',
+                                  'newsurl', 'newsimpa', 'newsdate', 'newsstate'], list(i)))
+                listn.append(dicts)
         except:
-            print('error')
-            result=False
-        return listr[:10]
+            print(sql)
+        return listn[:20]
 
 
     def deln(self,id):
@@ -315,11 +226,11 @@ class Renews():
 
     def re_news_n(self,typee,num):
         listn = []
-        if typee==0:
-            sql = "select * from `news_new` order by newsdate desc limit  %s,%s"%(num*10,20)
+        if typee=='8':
+            sql = "select * from `news_new` order by newsdate desc limit  %s,%s"%(int(num)*10,20)
         else:
             sql = "select * from `news_new` where newstype='%s' order by newsdate desc limit  %s,%s" % (
-                typee,num*10,20)
+                typee,int(num)*10,20)
         try:
             self.cursor.execute(sql)
             res = self.cursor.fetchall()
@@ -332,10 +243,22 @@ class Renews():
         
         return listn
 
+    def re_news_tp(self):
+        listt = []
+        sql = "select DISTINCT(newstype),news_tp from `news_new` JOIN news_type ON news_new.newstype=news_type.news_tpp"
+        try:
+            self.cursor.execute(sql)
+            res = self.cursor.fetchall()
+            for i in res:
+                listt.append(dict(zip(['newstpid','newstpcn'],list(i))))
+        except:
+            print(sql)
+        
+        return listt
 
 
 
 x = Renews()
-d = x.re_news_n('0',1)
-print(len(d))
+d = x.re_news_n(8,1)
+print(d)
 # print(datetime.datetime.now())

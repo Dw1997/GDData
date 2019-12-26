@@ -60,13 +60,29 @@ def changep():
 	result = x.changep(phone,oldp,newp)
 	return jsonify({'result':result})
 
-@app.route('/api/news',methods=['post','get'])
+
+@app.route('/api/news',methods = ['get','post'])
 def renews():
-	num = request.args.get('num')
-	i = int(num)
+	typee = request.args.get('tp')
+	num = request.args.get('page')
 	x = Renews()
-	data = x.fkrenews(i)
+	data = x.re_news_n(typee,num)
 	return jsonify({'result':data})
+
+# 返回新闻类别
+@app.route('/api/newstp',methods = ['get','post'])
+def renewstp():
+	x = Renews()
+	data = x.re_news_tp()
+	return jsonify({'result':data})
+
+# @app.route('/api/news',methods=['post','get'])
+# def renews():
+# 	num = request.args.get('num')
+# 	i = int(num)
+# 	x = Renews()
+# 	data = x.fkrenews(i)
+# 	return jsonify({'result':data})
 
 @app.route('/api/addlog',methods=['post','get'])
 def addlogs():
