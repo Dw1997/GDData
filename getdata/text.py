@@ -1,31 +1,40 @@
-import pymysql
+from hashlib import md5
+from time import time
+from requests import post,get
 import datetime
-def getnewid(cursor):
-    sql = 'select newid from school_news'
-    cursor.execute(sql)
-    results = cursor.fetchall()
-    for i in results:
-        yield i[0]
 
+m = md5()
+m.update(str(time()).encode(encoding='UTF-8'))
+uuid = m.hexdigest()
+api = 'http://ihealth.hq.gench.edu.cn/api/GDaily/add'
+data = {
+    'type': '学生',
+    'uuid': uuid,
+    'userid': '1623228',
+    'username': '丁伟',
+    'collegename': '信息技术学院',
+    'classname': '计科智能B16-3',
+    'phone': '15579760328',
+    'slocationcode': '360000',
+    'slocation': '江西省',
+    'locationcode': '360000',
+    'location': '赣州市',
+    'fever': '0',
+    'symptomids': '[]',
+    'diagnosis': '0',
+    'touchquezhen': '0',
+}
+cookies = {
+    'gench_hq_user': 'eSjHa2RgN+ocTBhxiv0vcQ=='
+}
 
-def update(cursor, newid, i):
-    sql = "update school_news set newno=%s where newid='%s'"%(i,newid)
-    print(sql)
-    cursor.execute(sql)
+res = post(url=api, data=data, cookies=cookies)
+with open('./hhh','a',encoding='utf-8') as f:
+    f.writelines(str(datetime.datetime.now())+str(res.json())+'\n')
+# if res.json().get('suc')==True:
+#     url = 'https://api.day.app/EZLfNsbV6JPoFGXtdEjdp4/打卡/打卡成功'
+#     res = get(url)
 
-
-if __name__ == "__main__":
-    # db = pymysql.connect('localhost', 'root', 'Dwzx170322',
-    #                          'graduate_design', charset='utf8')
-    # cursor = db.cursor()
-    # a=0
-    # for i in getnewid(cursor):
-    #     update(cursor,i,a)
-    #     a+=1
-
-    # db.commit()
-    data = str(datetime.datetime.now().date())
-    time = str(datetime.datetime.now().time()).split('.')[0]
-    time1 = data+' '+time
-    print(time1)
-
+# print(datetime.datetime.now())
+# url = 'https://api.day.app/EZLfNsbV6JPoFGXtdEjdp4/打卡/打卡成功'
+# res = get(url)
