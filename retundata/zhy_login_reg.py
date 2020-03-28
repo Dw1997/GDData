@@ -16,6 +16,9 @@ class ZHY_Login_Reg():
         
 
     def check(self,user,passw):
+        '''
+        检查用户名密码，登录使用
+        '''
         sql = "select * from user where userphone='%s'"%user
         try:
             self.cursor.execute(sql)
@@ -37,6 +40,9 @@ class ZHY_Login_Reg():
             return False
 
     def register(self,userphone,username,userpass,useraddr,areaid):
+        '''
+        注册
+        '''
         sql = "insert into user values ('%s','%s','%s','%s','%s','%s')"%(userphone,username,userpass,1,useraddr,areaid)
         print(sql)
         try:
@@ -49,6 +55,9 @@ class ZHY_Login_Reg():
         return result
 
     def addposter(self,userphone,username,userpass,areaid):
+        '''
+        添加快递员
+        '''
         sql = "insert into user values ('%s','%s','%s','%s','%s','%s')"%(userphone,username,userpass,'2','小区物业',areaid)
         print(sql)
         try:
@@ -61,6 +70,9 @@ class ZHY_Login_Reg():
         return result
 
     def changepass(self,userphone,userpass,usernew):
+        '''
+        更换密码
+        '''
         sql = "select userpass from user where userphone=%s"%userphone
         print(sql)
         try:
@@ -81,6 +93,12 @@ class ZHY_Login_Reg():
         return res
 
     def orders(self,who,userphone,gp):
+        '''
+        获取订单
+        who:用户
+        userphone:用用户手机号
+        gp:发或者收
+        '''
         if who=='getuser':
             sql = "select * from orderlist where %s=%s and getpost=%s"%(who,userphone,gp)
         if who=='poster':
@@ -102,6 +120,9 @@ class ZHY_Login_Reg():
         return res
     
     def poster_send(self, phone, addr, areaid):
+        '''
+        快递员添加派送到小区内快递
+        '''
         sql = "select userphone from user where useraddr='%s' and areaid='%s' "%(addr,areaid)
         orderid = str(math.floor(1e7 * random.random()))
         data = str(datetime.datetime.now().date())
@@ -127,6 +148,9 @@ class ZHY_Login_Reg():
         return ret
     
     def user_send(self,uphone,gname,gphone,gaddr):
+        '''
+        用户添加发送快递
+        '''
         sql = "select username,useraddr,areaid from `user` where userphone=%s"%uphone
         id = str(math.floor(1e7 * random.random()))
         data = str(datetime.datetime.now().date())
@@ -307,6 +331,9 @@ class ZHY_Login_Reg():
         return dicta
     
     def get_out_orders(self,ph):
+        '''
+        快递员获取发送到外面的快递
+        '''
         sql = "select * from `sendlist` where poster=%s and state=1"%ph
         listr = []
         listr = []
@@ -322,6 +349,9 @@ class ZHY_Login_Reg():
         return listr
 
     def ins_out_kdi(self,id,kid):
+        '''
+        快递员发送快递到小区外后，为快递填写快递啊单号
+        '''
         sql = "update `sendlist` set state='3',kuaidid=%s where id=%s"%(kid,id)
         result = False
         try:
@@ -334,6 +364,9 @@ class ZHY_Login_Reg():
         return result
     
     def re_po_co(self,ph):
+        '''
+        获取快递员评论
+        '''
         listr = []
         sql = "select * from `comments` where poserphone='%s'"%ph
         try:
@@ -350,6 +383,9 @@ class ZHY_Login_Reg():
         return listr
 
     def deluser(self,ph):
+        '''
+        删除用户
+        '''
         result = False
         sql = "delete from `user` where userphone='%s'"%ph
         try:

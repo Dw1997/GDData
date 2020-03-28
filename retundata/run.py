@@ -224,6 +224,7 @@ def zhyuser_send():
 	result = x.user_send(uphone,gname,gphone,gaddr)
 	return jsonify({'result':result})
 
+# 获取用户发送到小区外的快递
 @app.route('/zhy/api/user_out',methods=['get','post'])
 def zhyuser_out():
 	phone = request.args.get('ph')
@@ -239,6 +240,7 @@ def zhyuser_out_all():
 	result = x.return_out_all(areaid)
 	return jsonify({'result':result})
 
+# 获取小区内所有用户、快递员
 @app.route('/zhy/api/gper',methods=['get','post'])
 def zhyget_per():
 	typee = request.args.get('tp')
@@ -247,6 +249,7 @@ def zhyget_per():
 	result = x.return_per(typee,aid)
 	return jsonify({'resule':result})
 
+# 返回小区内用户地址或者快递员名字
 @app.route('/zhy/api/gan',methods=['get','post'])
 def zhyget_an():
 	typee = request.args.get('tp')
@@ -255,6 +258,7 @@ def zhyget_an():
 	result = x.return_inf_n_a(typee,uphone)
 	return jsonify({'result':result})
 
+# 获取用户信息
 @app.route('/zhy/api/getubp',methods=['get','post'])
 def zhyget_user_b_p():
 	uphone = request.args.get('up')
@@ -315,7 +319,7 @@ def zhy_add_id_ns():
 	result = x.ins_out_kdi(id,kid)
 	return jsonify({'result':result})
 
-
+# 获取快递员评论
 @app.route('/zhy/api/repoc',methods=['get','post'])
 def zhy_ret_poco():
 	ph = request.args.get('ph')
@@ -323,16 +327,13 @@ def zhy_ret_poco():
 	result = x.re_po_co(ph)
 	return jsonify({'result':result})
 
+# 删除用户
 @app.route('/zhy/api/deluser', methods=['get', 'post'])
 def zhy_del_user():
 	ph = request.args.get('ph')
 	x = ZHY_Login_Reg()
 	result = x.deluser(ph)
 	return jsonify({'result': result})
-
-
-
-
 
 if __name__=='__main__':
 	app.config['JSON_AS_ASCII'] = False
